@@ -1,0 +1,62 @@
+{# app/Resources/views/layout.html.twig #}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" charset="UTF-8" />
+
+        <title>{% block title %}Infotravel{% endblock %}</title>
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}" type="text/css" />
+    {% endblock %}
+    </head>
+
+    <body>
+        <div class="container">
+            <div id="header" class="hero-unit">
+                <h1>Infotravel pour AT1</h1>
+                <p>Symfony2 / PHP / Doctrine / FOSUserBundle</p>
+            </div>
+
+            <div class="row">
+                <div id="menu" class="span3">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li>
+                   {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                Connecté en tant que {{ app.user.username }} - <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+{% else %}
+                                <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+{% endif %}
+                            </li>         
+                            <li><a href="{{ path('blog_accueil') }}">Accueil du blog</a></li>
+                        {% if is_granted('ROLE_AUTEUR') %}
+                                <li><a href="{{ path('blog_ajouter') }}">Ajouter un article</a></li>
+                        {% endif %}
+                                </ul>
+
+          {{ render(controller("BlogBundle:Blog:menu", {'nombre': 3})) }}
+                            </div>
+                            <div id="content" class="span9">
+          {% block body %}
+          {% endblock %}
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <footer>
+                                <center>
+                                    <p>Test symfony2 pour AT1.</p>
+                                </center>
+                            </footer>
+                        </div>
+
+  {% block javascripts %}
+    {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
+                        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+                        <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+  {% endblock %}
+
+                    </body>
+                </html>

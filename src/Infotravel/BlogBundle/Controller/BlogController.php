@@ -11,9 +11,6 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 class BlogController extends Controller {
 
     public function indexAction($page) {
-        if ($page < 1) {
-            throw $this->createNotFoundException('Page inexistante (page = ' . $page . ')');
-        }
         $em = $this->getDoctrine()
                 ->getManager();
         $article = $em->getRepository('BlogBundle:Article')
@@ -21,7 +18,7 @@ class BlogController extends Controller {
         return $this->render("BlogBundle:Blog:index.html.twig", array(
                     'articles' => $article,
                     'page' => $page,
-                    'nombrePage' => ceil(count($article) / 3),
+                    'nombrePage' => ceil(count($article) / 10),
         ));
     }
 
