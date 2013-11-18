@@ -3,82 +3,111 @@
 namespace Infotravel\BlogBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Infotravel\BlogBundle\Entity\Article;
+use Infotravel\BlogBundle\Form\ArticleType;
+use Infotravel\BlogBundle\Form\ArticleEditType;
+use JMS\SecurityExtraBundle\Annotation\Secure;
 
 class BlogController extends Controller {
 
-    public function indexAction() {
-        $articles = array(
-            array(
-                'titre' => 'Mon weekend a Phi Phi Island !',
-                'id' => 1,
-                'auteur' => 'winzou',
-                'contenu' => 'Ce weekend était trop bien. Blabla?',
-                'date' => new \Datetime()),
-            array(
-                'titre' => 'Repetition du National Day de Singapour',
-                'id' => 2,
-                'auteur' => 'winzou',
-                'contenu' => 'Bientôt prêt pour le jour J. Blabla?',
-                'date' => new \Datetime()),
-            array(
-                'titre' => 'Chiffre d\'affaire en hausse',
-                'id' => 3,
-                'auteur' => 'M@teo21',
-                'contenu' => '+500% sur 1 an, fabuleux. Blabla?',
-                'date' => new \Datetime())
-        );
-        return $this->render("BlogBundle:Blog:index.html.twig", array(
-                    'articles' => $articles
-        ));
-    }
-
-    public function voirAction($id) {
-        $article = array(
-            'id' => 1,
-            'titre' => 'Mon weekend a Phi Phi Island !',
-            'auteur' => 'winzou',
-            'contenu' => 'Ce weekend était trop bien. Blabla?',
-            'date' => new \Datetime()
-        );
-
-        // Puis modifiez la ligne du render comme ceci, pour prendre en compte l'article :
-        return $this->render('BlogBundle:Blog:voir.html.twig', array(
-                    'article' => $article
-        ));
-    }
-
-    public function ajouterAction() {
-        if ($this->get('request')->getMethod() == 'POST') {
-            $this->get('session')->getFlashBag()->add('notice', "Article bien enregisté.");
-            return $this->redirect($this->generateUrl('blog_voir', array(
-                                'id' => 5,
-            )));
+    public function indexAction($page) {
+        if ($page < 1) {
+            throw $this->createNotFoundException('Page inexistante (page = ' . $page . ')');
         }
-        return $this->render('BlogBundle:Blog:ajouter.html.twig');
+        $em = $this->getDoctrine()
+                ->getManager();
+        $article = $em->getRepository('BlogBundle:Article')
+                ->getArticles(3, $page);
+        return $this->render("BlogBundle:Blog:index.html.twig", array(
+                    'articles' => $article,
+                    'page' => $page,
+                    'nombrePage' => ceil(count($article) / 3),
+        ));
+    }
+
+    public function voirAction(Article $article) {
+
+        return $this->render('BlogBundle:Blog:voir.html.twig', array(
+                    'article' => $article,
+        ));
+    }
+
+    /**
+     * @Secure(roles="ROLE_AUTEUR")
+     */
+    public function ajouterAction() {
+        $article = new Article();
+        $form = $this->createForm(new ArticleType, $article);
+        $req = $this->getRequest();
+
+        if ($req->getMethod() == 'POST') {
+            $form->bind($req);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($article);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('info', 'Article bien ajouté');
+                return $this->redirect($this->generateUrl('blog_voir', array(
+                                    'id' => $article->getId(),
+                )));
+            }
+        }
+        return $this->render('BlogBundle:Blog:ajouter.html.twig', array(
+                    'form' => $form->createView(),
+        ));
     }
 
     public function modifierAction($id) {
-        $article = array(
-            'id' => 1,
-            'titre' => 'Mon weekend a Phi Phi Island !',
-            'auteur' => 'winzou',
-            'contenu' => 'Ce weekend était trop bien. Blabla?',
-            'date' => new \Datetime()
-        );
+        $article = new Article();
 
-        // Puis modifiez la ligne du render comme ceci, pour prendre en compte l'article :
-        return $this->render('BlogBundle:Blog:modifier.html.twig', array(
-                    'article' => $article
+        $form = $this->createForm(new ArticleEditType, $article);
+        $req = $this->getRequest();
+
+        if ($req->getMethod() == 'POST') {
+            $form->bind($req);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()
+                        ->getManager();
+                $em->persist($article);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('info', 'Article bien modifié');
+                return $this->redirect($this->generateUrl('blog_voir', array(
+                                    'id' => $article->getId(),
+                )));
+            }
+        }
+        return $this->render("BlogBundle:Blog:modifier.html.twig", array(
+                    'form' => $form->createView(),
+                    'article' => $article,
         ));
     }
 
-    public function supprimerAction($id) {
-        return $this->render('BlogBundle:Blog:supprimer.html.twig');
+    public function supprimerAction(Article $article) {
+        $form = $this->createFormBuilder()->getForm();
+
+        $request = $this->getRequest();
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($article);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('info', 'Article bien supprimé');
+                return $this->redirect($this->generateUrl('blog_accueil'));
+            }
+        }
+        return $this->render('BlogBundle:Blog:supprimer.html.twig', array(
+                    'article' => $article,
+                    'form' => $form->createView()
+        ));
     }
 
-    public function menuAction() {
-        $liste = array(
-            array('id' => 2, 'titre' => 'Infotravel'),
+    public function menuAction($nombre) {
+        $liste = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('BlogBundle:Article')
+                ->findBy(
+                array(), array('date' => 'desc'), $nombre, 0
         );
         return $this->render('BlogBundle:Blog:menu.html.twig', array(
                     'liste_articles' => $liste,
