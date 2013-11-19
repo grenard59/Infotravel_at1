@@ -14,15 +14,12 @@ class Categories implements FixtureInterface
 
     foreach($noms as $i => $nom)
     {
-      // On crée la catégorie
       $liste_categories[$i] = new Categorie();
       $liste_categories[$i]->setNom($nom);
 
-      // On la persiste
       $manager->persist($liste_categories[$i]);
     }
 
-    // On déclenche l'enregistrement
     $manager->flush();
   }
 }

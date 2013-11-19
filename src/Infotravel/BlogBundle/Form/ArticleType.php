@@ -22,24 +22,27 @@ class ArticleType extends AbstractType {
                 ->add('auteur', 'text')
                 ->add('tag', 'text', array('required' => false))
                 ->add('image', new ImageType(), array('required' => false))
-                ->add('categories', 'entity', array(
-                    'class' => 'BlogBundle:Categorie',
-                    'property' => 'nom',
-                    'multiple' => true,
-                    'expanded' => false
+                ->add('categories', 'collection', array(
+                    'type' => new CategorieType(),
+                    'allow_add' => true,
+                    'allow_delete' => true,
                 ))
+//                ->add('tags', 'collection', array(
+//                    'type' => new TagsType(),
+//                    'allow_add' => true,
+//                    'allow_delete' => true,
+//                ))
         ;
         $factory = $builder->getFormFactory();
 
         $builder->addEventListener(
-                FormEvents::PRE_SET_DATA,
-                function(FormEvent $event) use ($factory) {
+                FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($factory) {
                     $article = $event->getData();
 
                     if (null === $article) {
                         return;
                     }
-                    
+
                     if (false === $article->getPublication()) {
                         $event->getForm()->add(
                                 $factory->createNamed('publication', 'checkbox', null, array('required' => false))

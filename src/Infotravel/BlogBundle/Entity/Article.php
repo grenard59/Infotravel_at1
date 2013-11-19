@@ -5,7 +5,6 @@ namespace Infotravel\BlogBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-
 /**
  * Article
  *
@@ -30,7 +29,8 @@ class Article {
         $this->publication = true;
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->comemntaires = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+
     }
 
     /**
@@ -97,11 +97,16 @@ class Article {
     private $slug;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Infotravel\BlogBundle\Entity\Tags", cascade={"persist"})
+     */
+    private $liste_tags;
+
+    /**
      * @var string
      * @ORM\Column(name="tag", type="string", length=255, nullable=true)
      */
     private $tag;
-    
+
     /**
      * Get id
      *
@@ -325,17 +330,15 @@ class Article {
         return $this->dateEdition;
     }
 
-
     /**
      * Set slug
      *
      * @param string $slug
      * @return Article
      */
-    public function setSlug($slug)
-    {
+    public function setSlug($slug) {
         $this->slug = $slug;
-    
+
         return $this;
     }
 
@@ -344,8 +347,7 @@ class Article {
      *
      * @return string 
      */
-    public function getSlug()
-    {
+    public function getSlug() {
         return $this->slug;
     }
 
@@ -355,10 +357,9 @@ class Article {
      * @param \Infotravel\BlogBundle\Entity\Tag $tag
      * @return Article
      */
-    public function addTag(\Infotravel\BlogBundle\Entity\Tag $tag)
-    {
+    public function addTag(\Infotravel\BlogBundle\Entity\Tag $tag) {
         $this->tag[] = $tag;
-    
+
         return $this;
     }
 
@@ -367,8 +368,7 @@ class Article {
      *
      * @param \Infotravel\BlogBundle\Entity\Tag $tag
      */
-    public function removeTag(\Infotravel\BlogBundle\Entity\Tag $tag)
-    {
+    public function removeTag(\Infotravel\BlogBundle\Entity\Tag $tag) {
         $this->tag->removeElement($tag);
     }
 
@@ -378,10 +378,9 @@ class Article {
      * @param string $tag
      * @return Article
      */
-    public function setTag($tag)
-    {
+    public function setTag($tag) {
         $this->tag = $tag;
-    
+
         return $this;
     }
 
@@ -390,8 +389,53 @@ class Article {
      *
      * @return string 
      */
-    public function getTag()
+    public function getTag() {
+        return $this->tag;
+    }
+
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTags()
     {
         return $this->tag;
+    }
+    
+    
+
+    /**
+     * Add liste_tags
+     *
+     * @param \Infotravel\BlogBundle\Entity\Tag $listeTags
+     * @return Article
+     */
+    public function addListeTag(\Infotravel\BlogBundle\Entity\Tag $listeTags)
+    {
+        $this->liste_tags[] = $listeTags;
+    
+        return $this;
+    }
+
+    /**
+     * Remove liste_tags
+     *
+     * @param \Infotravel\BlogBundle\Entity\Tag $listeTags
+     */
+    public function removeListeTag(\Infotravel\BlogBundle\Entity\Tag $listeTags)
+    {
+        $this->liste_tags->removeElement($listeTags);
+    }
+
+    /**
+     * Get liste_tags
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getListeTags()
+    {
+        return $this->liste_tags;
     }
 }

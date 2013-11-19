@@ -45,7 +45,7 @@ class BlogController extends Controller {
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($article);
                 $em->flush();
-                $this->get('session')->getFlashBag()->add('info', 'Article bien ajouté');
+                $this->get('session')->getFlashBag()->add('info', 'Article bien ajoutÃ©');
                 return $this->redirect($this->generateUrl('blog_voir', array(
                                     'id' => $article->getId(),
                 )));
@@ -55,7 +55,10 @@ class BlogController extends Controller {
                     'form' => $form->createView(),
         ));
     }
-
+    
+    /**
+     * @Secure(roles="ROLE_AUTEUR")
+     */
     public function modifierAction(Article $article) {
         $form = $this->createForm(new ArticleEditType, $article);
         $req = $this->getRequest();
@@ -67,7 +70,7 @@ class BlogController extends Controller {
                         ->getManager();
                 $em->persist($article);
                 $em->flush();
-                $this->get('session')->getFlashBag()->add('info', 'Article bien modifié');
+                $this->get('session')->getFlashBag()->add('info', 'Article bien modifiÃ©');
                 return $this->redirect($this->generateUrl('blog_voir', array(
                                     'id' => $article->getId(),
                 )));
@@ -79,6 +82,9 @@ class BlogController extends Controller {
         ));
     }
 
+     /**
+     * @Secure(roles="ROLE_AUTEUR")
+     */
     public function supprimerAction(Article $article) {
         $form = $this->createFormBuilder()->getForm();
 
@@ -89,7 +95,7 @@ class BlogController extends Controller {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($article);
                 $em->flush();
-                $this->get('session')->getFlashBag()->add('info', 'Article bien supprimé');
+                $this->get('session')->getFlashBag()->add('info', 'Article bien supprimÃ©');
                 return $this->redirect($this->generateUrl('blog_accueil'));
             }
         }

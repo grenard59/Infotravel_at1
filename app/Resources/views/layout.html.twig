@@ -42,11 +42,18 @@
                                    <li>
 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                                         <button class="btn btn-primary" type="submit">Déconnexion</button>
+                                        </form>
 {% else %}                                        
                                         <button class="btn btn-primary" type="submit">Connexion</button>
+                                        </li>
+                            </form>
+                                    <li>
+                            <form action="{{ path('fos_user_registration_register') }}">
+                                <button class="btn btn-primary" type="submit">S'enregistrer</button>
+                            </form>
+                                            </li>
 {% endif %}
                                      </li>
-                             </form>
 
                                     <li><a href="{{ path('blog_accueil') }}">Accueil du blog</a></li>
                         {% if is_granted('ROLE_AUTEUR') %}
