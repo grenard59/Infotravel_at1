@@ -8,16 +8,16 @@
   {% include "BlogBundle:Blog:article.html.twig" %}
 
   <p>
-    <a href="{{ path('blog_accueil') }}" class="btn">
+    <a href="{{ path('blog_accueil') }}" class="btn btn-primary">
       <i class="icon-chevron-left"></i>
-      Retour à la liste
+      Retour Ã  la liste
     </a>
     {% if is_granted('ROLE_AUTEUR') %}
-    <a href="{{ path('blog_modifier', {'id': article.id}) }}" class="btn">
+    <a href="{{ path('blog_modifier', {'id': article.id}) }}" class="btn btn-primary">
       <i class="icon-edit"></i>
       Modifier l'article
     </a>
-    <a href="{{ path('blog_supprimer', {'id': article.id}) }}" class="btn">
+    <a href="{{ path('blog_supprimer', {'id': article.id}) }}" class="btn btn-primary">
       <i class="icon-trash"></i>
       Supprimer l'article
     </a>

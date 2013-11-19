@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" charset="UTF-8" />
+        <meta charset="UTF-8" />
 
         <title>{% block title %}Infotravel{% endblock %}</title>
 
@@ -17,52 +17,64 @@
             <div id="header" class="hero-unit">
                 <h1>Infotravel pour AT1</h1>
                 <p>Symfony2 / PHP / Doctrine / FOSUserBundle</p>
+            </div>
+            <div class="row" >
+                <div class="span12">
                     <form class="form-search">
                         <div class="input-append">
                             <input type="text" class="form-control" placeholder="Moteur de reve" width="400px">
                             <button class="btn btn-primary" type="submit">Search</button>
                         </div>
                     </form>
+                </div>
             </div>
-
             <div class="row">
 
                 <div id="menu" class="span3">
                     <ul class="nav nav-pills nav-stacked">
                         <li>
                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                Connecté en tant que {{ app.user.username }} - <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                                ConnectÃ© en tant que {{ app.user.username }}</li>
+                            <form action="{{ path('fos_user_security_logout') }}" >
 {% else %}
-                                <a href="{{ path('fos_user_security_login') }}">Connexion</a>
+                            <form action="{{ path('fos_user_security_login') }}" >
 {% endif %}
-                            </li>         
-                            <li><a href="{{ path('blog_accueil') }}">Accueil du blog</a></li>
+                                   <li>
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                        <button class="btn btn-primary" type="submit">DÃ©connexion</button>
+{% else %}                                        
+                                        <button class="btn btn-primary" type="submit">Connexion</button>
+{% endif %}
+                                     </li>
+                             </form>
+
+                                    <li><a href="{{ path('blog_accueil') }}">Accueil du blog</a></li>
                         {% if is_granted('ROLE_AUTEUR') %}
-                                <li><a href="{{ path('blog_ajouter') }}">Ajouter un article</a></li>
+                                        <li><a href="{{ path('blog_ajouter') }}">Ajouter un article</a></li>
                         {% endif %}
-                                </ul>
+                                    </ul>
 
           {{ render(controller("BlogBundle:Blog:menu", {'nombre': 3})) }}
-                            </div>
-                            <div id="content" class="span9">
+                                </div>
+                                <div id="content" class="span9">
           {% block body %}
           {% endblock %}
+                                    </div>
                                 </div>
+
+                                <hr>
+
+                                <footer>
+                                    <center>
+                                        <p>Test symfony2 pour AT1.</p>
+                                    </center>
+                                </footer>
                             </div>
 
-                            <hr>
-
-                            <footer>
-                                <center>
-                                    <p>Test symfony2 pour AT1.</p>
-                                </center>
-                            </footer>
-                        </div>
-
   {% block javascripts %}
-                        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-                        <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+                            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+                            <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
   {% endblock %}
 
-                    </body>
-                </html>
+                        </body>
+                    </html>
