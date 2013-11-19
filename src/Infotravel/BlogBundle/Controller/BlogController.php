@@ -11,6 +11,8 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 class BlogController extends Controller {
 
     public function indexAction($page) {
+        if ($page < 1)
+            $this->page = 1;
         $em = $this->getDoctrine()
                 ->getManager();
         $article = $em->getRepository('BlogBundle:Article')
@@ -18,7 +20,7 @@ class BlogController extends Controller {
         return $this->render("BlogBundle:Blog:index.html.twig", array(
                     'articles' => $article,
                     'page' => $page,
-                    'nombrePage' => ceil(count($article) / 10),
+                    'nombrePage' => ceil(count($article) / 3),
         ));
     }
 
@@ -54,9 +56,7 @@ class BlogController extends Controller {
         ));
     }
 
-    public function modifierAction($id) {
-        $article = new Article();
-
+    public function modifierAction(Article $article) {
         $form = $this->createForm(new ArticleEditType, $article);
         $req = $this->getRequest();
 

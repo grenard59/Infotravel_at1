@@ -1,32 +1,41 @@
 {% set accueil = accueil|default(false) %}
 
 <h2>
-  {% if article.image is not null %}
-<img
-  src="{{ asset(article.image.uploadDir ~ '/' ~ article.image.id ~ '.' ~ article.image.url) }}"
-  alt="{{ article.image.alt }}"
-/>  {% endif %}
-
   {% if accueil %}
-    <a href="{{ path('blog_voir', {'id': article.id} ) }}">{{ article.titre }}</a>
+        <a href="{{ path('blog_voir', {'id': article.id} ) }}">{{ article.titre }}</a>
   {% else %}
     {{ article.titre }}
   {% endif %}
-</h2>
+      {% if article.image is not null %}
+        <img
+            src="{{ asset(article.image.uploadDir ~ '/' ~ article.image.id ~ '.' ~ article.image.url) }}"
+            alt="{{ article.image.alt }}"
+            />  {% endif %}
+    </h2>
 
-<i>Le {{ article.date|date('d/m/Y') }}, par {{ article.auteur }}.</i>
+    <i>Le {{ article.date|date('d/m/Y') }}, par {{ article.auteur }}.</i>
 
-<div class="well">
+    <div class="well">
   {{ article.contenu }}
-</div>
-
+        </div>
+{% if accueil == false %}
 {% if article.categories.count > 0 %}
-  <div class="well well-small">
-    <p><i>
-      Catégories :
+        <div class="well well-small">
+            <p><i>
+                    Catégories :
       {% for categorie in article.categories %}
         {{ categorie.nom }}{% if not loop.last %}, {% endif %}
       {% endfor %}
-    </i></p>
-  </div>
+                </i></p>
+        </div>
+{% endif %}
+
+{% if article.tag != null %}
+        <div class="well well-small">
+            <p><i>
+                    Tags :
+      {{ article.tag }}
+                </i></p>
+        </div>
+{% endif %}
 {% endif %}

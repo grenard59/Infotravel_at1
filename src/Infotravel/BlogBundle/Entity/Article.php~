@@ -30,6 +30,7 @@ class Article {
         $this->publication = true;
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comemntaires = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -49,7 +50,7 @@ class Article {
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateEdition", type="datetime")
+     * @ORM\Column(name="dateEdition", type="datetime", nullable=true)
      */
     private $dateEdition;
 
@@ -95,6 +96,12 @@ class Article {
      */
     private $slug;
 
+    /**
+     * @var string
+     * @ORM\Column(name="tag", type="string", length=255, nullable=true)
+     */
+    private $tag;
+    
     /**
      * Get id
      *
@@ -236,8 +243,8 @@ class Article {
      * @param \Infotravel\BlogBundle\Entity\Categorie $categories
      * @return Article
      */
-    public function addCategorie(\Infotravel\BlogBundle\Entity\Categorie $categories) {
-        $this->categories[] = $categories;
+    public function addCategorie(\Infotravel\BlogBundle\Entity\Categorie $categorie) {
+        $this->categories[] = $categorie;
 
         return $this;
     }
@@ -247,8 +254,8 @@ class Article {
      *
      * @param \Infotravel\BlogBundle\Entity\Categorie $categories
      */
-    public function removeCategorie(\Infotravel\BlogBundle\Entity\Categorie $categories) {
-        $this->categories->removeElement($categories);
+    public function removeCategorie(\Infotravel\BlogBundle\Entity\Categorie $categorie) {
+        $this->categories->removeElement($categorie);
     }
 
     /**
@@ -318,4 +325,73 @@ class Article {
         return $this->dateEdition;
     }
 
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Article
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Add tag
+     *
+     * @param \Infotravel\BlogBundle\Entity\Tag $tag
+     * @return Article
+     */
+    public function addTag(\Infotravel\BlogBundle\Entity\Tag $tag)
+    {
+        $this->tag[] = $tag;
+    
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param \Infotravel\BlogBundle\Entity\Tag $tag
+     */
+    public function removeTag(\Infotravel\BlogBundle\Entity\Tag $tag)
+    {
+        $this->tag->removeElement($tag);
+    }
+
+    /**
+     * Set tag
+     *
+     * @param string $tag
+     * @return Article
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+    
+        return $this;
+    }
+
+    /**
+     * Get tag
+     *
+     * @return string 
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
 }

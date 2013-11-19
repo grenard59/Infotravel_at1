@@ -6,14 +6,12 @@ Accueil - {{ parent() }}
 
 {% block blog_body %}
 
-<h2>Liste des articles</h2>
-
 <ul>
   {% for article in articles %}
     {% include "BlogBundle:Blog:article.html.twig" with {'accueil': true} %}
         <hr />
   {% else %}
-        <p>Pas (encore !) d'articles</p>
+        <p>Pas d'articles</p>
   {% endfor %}
     </ul>
 

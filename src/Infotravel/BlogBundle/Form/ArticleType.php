@@ -20,7 +20,8 @@ class ArticleType extends AbstractType {
                 ->add('titre', 'text')
                 ->add('contenu', 'textarea')
                 ->add('auteur', 'text')
-                ->add('image', new ImageType())
+                ->add('tag', 'text', array('required' => false))
+                ->add('image', new ImageType(), array('required' => false))
                 ->add('categories', 'entity', array(
                     'class' => 'BlogBundle:Categorie',
                     'property' => 'nom',

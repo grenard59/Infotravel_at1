@@ -30,6 +30,7 @@ class Article {
         $this->publication = true;
         $this->categories = new \Doctrine\Common\Collections\ArrayCollection();
         $this->commentaires = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comemntaires = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -95,6 +96,12 @@ class Article {
      */
     private $slug;
 
+    /**
+     * @var string
+     * @ORM\Column(name="tag", type="string", length=255, nullable=true)
+     */
+    private $tag;
+    
     /**
      * Get id
      *
@@ -340,5 +347,51 @@ class Article {
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Add tag
+     *
+     * @param \Infotravel\BlogBundle\Entity\Tag $tag
+     * @return Article
+     */
+    public function addTag(\Infotravel\BlogBundle\Entity\Tag $tag)
+    {
+        $this->tag[] = $tag;
+    
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param \Infotravel\BlogBundle\Entity\Tag $tag
+     */
+    public function removeTag(\Infotravel\BlogBundle\Entity\Tag $tag)
+    {
+        $this->tag->removeElement($tag);
+    }
+
+    /**
+     * Set tag
+     *
+     * @param string $tag
+     * @return Article
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+    
+        return $this;
+    }
+
+    /**
+     * Get tag
+     *
+     * @return string 
+     */
+    public function getTag()
+    {
+        return $this->tag;
     }
 }
