@@ -26,3 +26,8 @@ blog_supprimer:
     defaults: { _controller: BlogBundle:Blog:supprimer }
     requirements:
         id: \d+
+
+blog_categorie:
+    pattern: /categorie/{id}
+    defaults: { _controller: BlogBundle:Blog:categorie }
+    

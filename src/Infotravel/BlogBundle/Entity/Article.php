@@ -76,7 +76,7 @@ class Article {
     private $publication;
 
     /**
-     * @ORM\OnetoOne(targetEntity="Infotravel\BlogBundle\Entity\Image", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Infotravel\BlogBundle\Entity\Image", cascade={"persist"})
      */
     private $image;
 

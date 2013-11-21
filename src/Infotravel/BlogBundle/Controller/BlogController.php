@@ -10,6 +10,25 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 
 class BlogController extends Controller {
 
+    public function categorieAction($id) {
+
+        $em = $this->getDoctrine()
+                ->getManager();
+        $categorie = $em->getRepository('BlogBundle:Categorie')
+                ->find($id);
+    
+        $articles = $em->getRepository('BlogBundle:Article')
+                ->getAvecCategorie(array($categorie->getNom()));
+     
+ 
+
+        return $this->render("BlogBundle:Blog:indexCategorie.html.twig", array(
+                    'articles' => $articles,
+                    'page' => 1,
+                    'nombrePage' => ceil(count($articles) / 3),
+        ));
+    }
+
     public function indexAction($page) {
         if ($page < 1)
             $this->page = 1;
@@ -55,7 +74,7 @@ class BlogController extends Controller {
                     'form' => $form->createView(),
         ));
     }
-    
+
     /**
      * @Secure(roles="ROLE_AUTEUR")
      */
@@ -82,7 +101,7 @@ class BlogController extends Controller {
         ));
     }
 
-     /**
+    /**
      * @Secure(roles="ROLE_AUTEUR")
      */
     public function supprimerAction(Article $article) {
@@ -106,14 +125,18 @@ class BlogController extends Controller {
     }
 
     public function menuAction($nombre) {
-        $liste = $this->getDoctrine()
-                ->getManager()
-                ->getRepository('BlogBundle:Article')
+        $em = $this->getDoctrine()
+                ->getManager();
+        $liste = $em->getRepository('BlogBundle:Article')
                 ->findBy(
                 array(), array('date' => 'desc'), $nombre, 0
         );
+
+        $categorie = $em->getRepository('BlogBundle:Categorie')
+                ->findAll();
         return $this->render('BlogBundle:Blog:menu.html.twig', array(
                     'liste_articles' => $liste,
+                    'categories' => $categorie,
         ));
     }
 

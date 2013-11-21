@@ -5,7 +5,6 @@ namespace Infotravel\BlogBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-
 /**
  * ArticleRepository
  *
@@ -32,7 +31,7 @@ class ArticleRepository extends EntityRepository {
                 ->getQuery();
         $req->setFirstResult(($page - 1) * $nombreParPage)
                 ->setMaxResults($nombreParPage);
-        
+
         return new Paginator($req);
     }
 
